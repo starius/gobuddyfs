@@ -1,6 +1,7 @@
 package gobuddyfs
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/golang/glog"
@@ -33,10 +34,22 @@ func (self *GKVStore) Set(key string, value []byte) error {
 	defer self.lock.Unlock()
 	self.lock.Lock()
 
-	if glog.V(2) {
-		glog.Infof("Set(%s)\n", key)
+	var err error
+	if value == nil {
+		if glog.V(2) {
+			glog.Infof("Delete(%s)\n", key)
+		}
+		var wasDeleted bool
+		wasDeleted, err = self.collection.Delete([]byte(key))
+		if !wasDeleted {
+			err = fmt.Errorf("attempt to delete nonexistent key")
+		}
+	} else {
+		if glog.V(2) {
+			glog.Infof("Set(%s)\n", key)
+		}
+		err = self.collection.Set([]byte(key), value)
 	}
-	err := self.collection.Set([]byte(key), value)
 	self.collection.Write()
 	self.store.Flush()
 	return err
