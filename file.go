@@ -304,7 +304,10 @@ func (file *File) Flush(ctx context.Context, req *fuse.FlushRequest) error {
 	}
 
 	if file.IsDirty() {
-		file.WriteBlock(file, file.KVS)
+		err := file.WriteBlock(file, file.KVS)
+		if err != nil {
+			return fuse.EIO
+		}
 	}
 	return nil
 }

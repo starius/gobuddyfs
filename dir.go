@@ -127,7 +127,7 @@ func (dir *Dir) Mkdir(ctx context.Context, req *fuse.MkdirRequest) (fs.Node, err
 
 	dir.Dirs = append(dir.Dirs, blk)
 	dir.MarkDirty()
-	dir.WriteBlock(dir, dir.KVS)
+	err = dir.WriteBlock(dir, dir.KVS)
 	if err != nil {
 		return nil, fuse.EIO
 	}
@@ -155,7 +155,7 @@ func (dir *Dir) Remove(ctx context.Context, req *fuse.RemoveRequest) error {
 	if !isDir {
 		dir.Files = append(dir.Files[:posn], dir.Files[posn+1:]...)
 		dir.MarkDirty()
-		dir.WriteBlock(dir, dir.KVS)
+		err = dir.WriteBlock(dir, dir.KVS)
 		if err != nil {
 			return fuse.EIO
 		}
@@ -173,7 +173,7 @@ func (dir *Dir) Remove(ctx context.Context, req *fuse.RemoveRequest) error {
 
 		dir.Dirs = append(dir.Dirs[:posn], dir.Dirs[posn+1:]...)
 		dir.MarkDirty()
-		dir.WriteBlock(dir, dir.KVS)
+		err = dir.WriteBlock(dir, dir.KVS)
 		if err != nil {
 			return fuse.EIO
 		}
@@ -212,7 +212,7 @@ func (dir *Dir) Create(ctx context.Context, req *fuse.CreateRequest, resp *fuse.
 
 	dir.Files = append(dir.Files, blk)
 	dir.MarkDirty()
-	dir.WriteBlock(dir, dir.KVS)
+	err = dir.WriteBlock(dir, dir.KVS)
 	if err != nil {
 		return nil, nil, fuse.EIO
 	}
