@@ -263,6 +263,7 @@ func (file File) Attr(ctx context.Context, attr *fuse.Attr) error {
 	attr.Mode = 0444
 	attr.Inode = uint64(file.Id)
 	attr.Blocks = uint64(len(file.Blocks))
+	attr.BlockSize = uint32(file.BlockSize)
 	attr.Size = file.Size
 	return nil
 }
