@@ -153,6 +153,7 @@ func (dir *Dir) Remove(ctx context.Context, req *fuse.RemoveRequest) error {
 	}
 
 	if !isDir {
+		node.(*File).setSize(0)
 		dir.Files = append(dir.Files[:posn], dir.Files[posn+1:]...)
 		dir.MarkDirty()
 		err = dir.WriteBlock(dir, dir.KVS)
